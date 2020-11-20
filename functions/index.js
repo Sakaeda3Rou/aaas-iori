@@ -134,30 +134,48 @@ app.post('/function/insert_test', (req, res) => {
 });
 
 // storageのテスト
-app.get('/function/storage_test_down', (req, res) => {
+app.get('/function/storage_test_down', async (req, res) => {
   const sao = require('./model/sao.js');
 
   // 指定したPatternファイルをダウンロードする
-  sao.downloadPatt('pattern-marker.patt');
+  const file = await sao.downloadPatt('pattern-marker.patt');
 
   console.log('storage down finished');
+  res.send(`file => ${file}`);
   res.end();
 });
 
 app.get('/function/storage_test_up', (req, res) => {
+
+  fs.readFile('views/create_file.html', 'utf-8', (err, data) => {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(data);
+    res.end();
+  });
+});
+
+app.post('/function/storage_test_up', async (req, res) => {
+  // パラメータを取得
+  let text = req.body._text;
+  let body = req.body._body;
+
+  console.log(`text => ${text}`)
+
+  // ストレージに接続
   const sao = require('./model/sao.js');
 
-  sao.uploadPatt('patt');
+  // テキストをアップロード
+  await sao.uploadPatt(text, body);
 
-  console.log('storage up finished');
+  res.send('upload finished');
   res.end();
-});
+})
 
 // scrapingのテスト
 app.get('/function/scrap_test', (req, res) => {
 
   (() => {
-    const scrap = require('./model/scrap.js');
+    const scrap = require('./model/orient_devil.js');
 
     var text = ('await scrap.pup_test()');
 

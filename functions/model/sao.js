@@ -8,7 +8,7 @@
 // //   keyFilename: '../aaas-iori-878bcb050fd0.json'
 // // });
 //
-// const storage = new Storage({keyFilename: '../aaas-iori-878bcb050fd0.json'});
+// const bucket = new Storage({keyFilename: '../aaas-iori-878bcb050fd0.json'});
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXa5waXjg5x17KxbR-HMyXXQ4kivx1jLc",
@@ -30,33 +30,49 @@ if (!admin.apps.length) {
 const bucket = admin.storage().bucket();
 
 // パターンファイルのアップロード
-exports.uploadPatt = (patt_file) => {
+exports.uploadPatt = async (fileName, body) => {
+  return new Promise((resolve, reject) => {
+    const fs = require('fs');
+    const Readable = require('stream').Readable;
 
-  // デフォルトバケットにアップロード
-  // bucket.upload('/Users/noa/Downloads/test.txt');
+    const create_file = bucket.file(`${fileName}.txt`);
+    const uploadStream = create_file.createWriteStream({
+      predefinedAcl: 'publicRead',
+      metadata: {
+        cacheControl: 'no-cache',
+        contentType: 'text/plain',
+      },
+    });
 
+    const readStream = new Readable();
+    readStream.push(`${body}`);
+    readStream.push(null);
 
-  getFolder();
-  async function getFolder() {
-    const files = await bucket.getFiles({});
+    readStream
+      .pipe(uploadStream)
+      .on('end', function() {})
+      .on('finish', resolve);
 
-    console.log('files: ', files)
-    console.log('files type: ', typeof files)
-  }
+    console.dir(create_file);
 
-}
+  });
+
+  // const files = await bucket.getFiles({});
+  //
+  // console.log('files: ', files)
+  // console.log('files type: ', typeof files)
+
+};
 
 // パターンファイルのダウンロード
-exports.downloadPatt = (patt_file_name) => {
+exports.downloadPatt = async (patt_file_name) => {
 
-  downloadFile();
+  let file = await bucket.file('patterns/pattern-marker.patt').download();
+  console.log('file type => ', typeof file);
+  console.log('file => ', file);
 
-  async function downloadFile() {
-    let file = await bucket.file('patterns/pattern-marker.patt').download();
-    console.log('file type => ', typeof file);
-    console.log('file => ', file);
+  return file;
 
-  }
   // console.log('patt: ', patt_storage);
   // patterns_storage.child(`${patt_file_name}`).getDownloadURL().then(function(url) {
   //   console.log('storage accessed');
@@ -64,4 +80,4 @@ exports.downloadPatt = (patt_file_name) => {
   // }).catch(function(error) {
   //   console.log('pattern file download error');
   // });
-}
+};
