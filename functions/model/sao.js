@@ -35,7 +35,7 @@ exports.uploadPatt = async (fileName, body) => {
     const fs = require('fs');
     const Readable = require('stream').Readable;
 
-    const create_file = bucket.file(`${fileName}.txt`);
+    const create_file = bucket.file(`patterns/${fileName}.txt`);
     const uploadStream = create_file.createWriteStream({
       predefinedAcl: 'publicRead',
       metadata: {

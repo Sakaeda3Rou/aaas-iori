@@ -172,17 +172,15 @@ app.post('/function/storage_test_up', async (req, res) => {
 })
 
 // scrapingのテスト
-app.get('/function/scrap_test', (req, res) => {
+app.get('/function/scrap_test', async (req, res) => {
 
-  (() => {
-    const scrap = require('./model/orient_devil.js');
+  const scrap = require('./model/orient_devil.js');
 
-    var text = ('await scrap.pup_test()');
+  var text = await scrap.pup_test();
 
-    console.log('scrap test finished');
-    res.send(text);
-    res.end();
-  })();
+  console.log('scrap test finished');
+  res.send('orient devil');
+  res.end();
 });
 
 exports.app = functions.https.onRequest(app);
