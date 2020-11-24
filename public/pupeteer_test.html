@@ -8,9 +8,39 @@
     <h1 id="test_h">テスト</h1>
 
     <form action="#" method="post">
-      <input type="text" id="input_test" name="_input_test" value="">
+      <textarea id="input_test" name="_input_test" rows="8" cols="80"></textarea>
 
-      <input type="submit" id="btn_make" value="送信">
+      <input type="button" id="btn_make" value="送信" onclick="create_element()">
+
     </form>
+
+    <div id="qr"></div>
+
+      <script>
+        function create_element() {
+          console.log('check_point_1');
+
+          // qr_okubasyo要素を取得
+          const qr = document.getElementById("qr");
+
+          console.log(`qr => ${qr.hasChildNodes()}`);
+
+          // qr_okubasyoが子要素を持っていない場合、子要素を追加する
+          if (!qr.hasChildNodes()) {
+            console.log('check_point_2');
+
+            // 追加する要素を準備
+            const img = document.createElement("img");
+            img.setAttribute("id", "qr_img");
+            img.setAttribute("src", ".fumo.jpg");
+
+            // qr_okubas子要素追加
+            qr.appendChild(img);
+          }
+
+          console.log('check_point_3');
+
+        }
+      </script>
   </body>
 </html>
