@@ -138,7 +138,7 @@ app.get('/function/storage_test_down', async (req, res) => {
   const sao = require('./model/sao.js');
 
   // 指定したPatternファイルをダウンロードする
-  const file = await sao.downloadPatt('pattern-marker.patt');
+  const file = await sao.download_file('pattern-marker.patt');
 
   console.log('storage down finished');
   res.send(`file => ${file}`);
@@ -165,7 +165,7 @@ app.post('/function/storage_test_up', async (req, res) => {
   const sao = require('./model/sao.js');
 
   // テキストをアップロード
-  await sao.uploadPatt(text, body);
+  await sao.upload_file(text, body);
 
   res.send('upload finished');
   res.end();
@@ -176,10 +176,23 @@ app.get('/function/scrap_test', async (req, res) => {
 
   const scrap = require('./model/orient_devil.js');
 
-  var text = await scrap.pup_test();
+  var text = await scrap.pup_test("pien");
 
   console.log('scrap test finished');
   res.send('orient devil');
+  res.end();
+});
+
+app.get('/function/create_marker_test', async(req, res) => {
+
+  const scrap = require('./model/orient_devil.js');
+
+  // uidを設定
+  let uid = 'pien';
+
+  var marker = await scrap.create_marker(uid);
+
+  res.send(marker);
   res.end();
 });
 

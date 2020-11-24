@@ -29,14 +29,14 @@ if (!admin.apps.length) {
 
 const bucket = admin.storage().bucket();
 
-// パターンファイルのアップロード
-exports.uploadPatt = async (fileName, body) => {
+// ファイルのアップロード
+exports.upload_file = async (file_name, body) => {
   return new Promise((resolve, reject) => {
     const fs = require('fs');
     const Readable = require('stream').Readable;
 
-    const create_file = bucket.file(`patterns/${fileName}.txt`);
-    const uploadStream = create_file.createWriteStream({
+    const upload_file = bucket.file(`patterns/${file_name}.txt`);
+    const uploadStream = upload_file.createWriteStream({
       predefinedAcl: 'publicRead',
       metadata: {
         cacheControl: 'no-cache',
@@ -53,7 +53,7 @@ exports.uploadPatt = async (fileName, body) => {
       .on('end', function() {})
       .on('finish', resolve);
 
-    console.dir(create_file);
+    console.dir(upload_file);
 
   });
 
@@ -64,8 +64,8 @@ exports.uploadPatt = async (fileName, body) => {
 
 };
 
-// パターンファイルのダウンロード
-exports.downloadPatt = async (patt_file_name) => {
+// ファイルのダウンロード
+exports.download_file = async (file_name) => {
 
   let file = await bucket.file('patterns/pattern-marker.patt').download();
   console.log('file type => ', typeof file);
@@ -80,4 +80,36 @@ exports.downloadPatt = async (patt_file_name) => {
   // }).catch(function(error) {
   //   console.log('pattern file download error');
   // });
+};
+
+// QRファイルのアップロード
+exports.upload_qr = async (file_name, body) => {
+  return new Promise((resolve, reject) => {
+    const fs = require('fs');
+    const Readable = require('stream').Readable;
+
+    const upload_file = bucket.file(`qr/${file_name}`);
+    const uploadStream = upload_file.createWriteStream({
+      predefinedAcl: 'publicRead',
+      metadata: {
+        cacheControl: 'no-cache',
+        contentType: 'image/png',
+      },
+    });
+
+    const readStream = new Readable();
+    readStream.push(`${body}`);
+    readStream.push(null);
+
+    readStream
+      .pipe(uploadStream)
+      .on('end', function() {})
+      .on('finish', resolve);
+
+    console.dir(upload_file);
+
+  });
+
+  return;
+
 };
