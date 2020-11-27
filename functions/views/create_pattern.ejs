@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>create_pattern</title>
+    <script>
+    var THREEx = THREEx || {}
+
+    THREEx.ArPatternFile = {}
+
+    THREEx.ArPatternFile.encodeImageURL = function(imageURL, onComplete){
+    	var image = new Image;
+    	image.src = imageURL;
+
+    	// copy image on canvas
+    	var canvas = document.createElement('canvas');
+    	var context = canvas.getContext('2d')
+    	canvas.width = 16;
+    	canvas.height = 16;
+
+    	// document.body.appendChild(canvas)
+    	// canvas.style.width = '200px'
+
+
+    	var patternFileString = ''
+    	for(var orientation = 0; orientation > -2*Math.PI; orientation -= Math.PI/2){
+    		// draw on canvas - honor orientation
+    		context.save();
+     		context.clearRect(0,0,canvas.width,canvas.height);
+    		context.translate(canvas.width/2,canvas.height/2);
+    		context.rotate(orientation);
+    		context.drawImage(image, -canvas.width/2,-canvas.height/2, canvas.width, canvas.height);
+    		context.restore();
+
+    		// get imageData
+    		var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+
+    		// generate the patternFileString for this orientation
+    		if( orientation !== 0 )	patternFileString += '\n'
+    		// NOTE bgr order and not rgb!!! so from 2 to 0
+    		for(var channelOffset = 2; channelOffset >= 0; channelOffset--){
+    			// console.log('channelOffset', channelOffset)
+    			for(var y = 0; y < imageData.height; y++){
+    				for(var x = 0; x < imageData.width; x++){
+
+    					if( x !== 0 ) patternFileString += ' '
+
+    					var offset = (y*imageData.width*4) + (x * 4) + channelOffset
+    					var value = imageData.data[offset]
+
+    					patternFileString += String(value).padStart(3);
+    				}
+    				patternFileString += '\n'
+    			}
+    		}
+    	}
+
+    	return patternFileString
+    }
+
+    function encodeImage(image){
+    	// copy image on canvas
+    	var canvas = document.createElement('canvas');
+    	var context = canvas.getContext('2d')
+    	canvas.width = 16;
+    	canvas.height = 16;
+
+    	// document.body.appendChild(canvas)
+    	// canvas.style.width = '200px'
+
+
+    	var patternFileString = ''
+    	for(var orientation = 0; orientation > -2*Math.PI; orientation -= Math.PI/2){
+    		// draw on canvas - honor orientation
+    		context.save();
+     		context.clearRect(0,0,canvas.width,canvas.height);
+    		context.translate(canvas.width/2,canvas.height/2);
+    		context.rotate(orientation);
+    		context.drawImage(image, -canvas.width/2,-canvas.height/2, canvas.width, canvas.height);
+    		context.restore();
+
+    		// get imageData
+    		var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+
+    		// generate the patternFileString for this orientation
+    		if( orientation !== 0 )	patternFileString += '\n'
+    		// NOTE bgr order and not rgb!!! so from 2 to 0
+    		for(var channelOffset = 2; channelOffset >= 0; channelOffset--){
+    			// console.log('channelOffset', channelOffset)
+    			for(var y = 0; y < imageData.height; y++){
+    				for(var x = 0; x < imageData.width; x++){
+
+    					if( x !== 0 ) patternFileString += ' '
+
+    					var offset = (y*imageData.width*4) + (x * 4) + channelOffset
+    					var value = imageData.data[offset]
+
+    					patternFileString += String(value).padStart(3);
+    				}
+    				patternFileString += '\n'
+    			}
+    		}
+    	}
+
+    	return patternFileString
+    }
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+
+      var innerImageURL = "<%= encoded_image %>";
+      var fullMarkerURL = null;
+      var imageName = "pien";
+      var body = null;
+
+
+
+      let result = THREEx.ArPatternFile.encodeImageURL(innerImageURL, function onComplete(patternFileString) {});
+
+      console.log(`result => ${result}`);
+
+    </script>
+  </body>
+</html>

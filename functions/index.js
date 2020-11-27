@@ -6,6 +6,9 @@ const fs = require('fs');
 
 const app = express();
 
+app.set('view engine', 'ejs');
+
+app.use(express.static('model'));
 app.use(session({
   secret: 'secret',
   resave: false,
@@ -183,6 +186,17 @@ app.get('/function/scrap_test', async (req, res) => {
   res.end();
 });
 
+app.get('/function/chrome_test', async (req, res) => {
+  const scrap = require('./model/orient_devil.js');
+
+  var text = await scrap.chrome_test();
+
+  console.log('chrome test finished');
+  res.send('chrome test');
+  res.end();
+});
+
+// マーカー作成のテスト
 app.get('/function/create_marker_test', async(req, res) => {
 
   const scrap = require('./model/orient_devil.js');
@@ -195,6 +209,22 @@ app.get('/function/create_marker_test', async(req, res) => {
   res.send(marker);
   res.end();
 });
+
+// パターン作成のテスト
+app.get('/function/create_pattern_test', async(req, res) => {
+
+  // TODO: 画像を受け取る
+
+  // TODO: create_patternに渡すものを用意
+  let encoded_image = 'data:image/jpeg;base64,/4AAQSkZJRgABAQAASABIAAD'
+
+  // 画像を渡してパターンファイルを作成する
+  res.render('create_pattern', {
+    encoded_image: encoded_image,
+  });
+});
+
+
 
 exports.app = functions.https.onRequest(app);
 
