@@ -212,11 +212,10 @@ app.get('/function/create_marker_test', async(req, res) => {
 
 // パターン作成のテスト
 app.get('/function/create_pattern_test', async(req, res) => {
-
   // TODO: 画像を受け取る
 
   // TODO: create_patternに渡すものを用意
-  let encoded_image = 'data:image/jpeg;base64,/4AAQSkZJRgABAQAASABIAAD'
+  let encoded_image = 'data:image/jpeg;base64,/4'
 
   // 画像を渡してパターンファイルを作成する
   res.render('create_pattern', {
@@ -224,7 +223,18 @@ app.get('/function/create_pattern_test', async(req, res) => {
   });
 });
 
+// canvasのテスト
+app.get('/function/canvas_test', async(req, res) => {
 
+  const image_devil = require('./model/image_devil.js');
+
+  // TODO: uidを渡す
+  let image = await image_devil.create_image('uid');
+
+  console.log('image devil finished');
+  res.send(image);
+  res.end();
+});
 
 exports.app = functions.https.onRequest(app);
 

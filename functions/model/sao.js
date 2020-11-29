@@ -113,3 +113,31 @@ exports.upload_qr = async (file_name, body) => {
   return;
 
 };
+
+// pattファイルのアップロード
+exports.upload_patt = async (file_name, body) => {
+  return new Promise((resolve, reject) => {
+    const fs = require('fs');
+    const Readable = require('stream').Readable;
+
+    const upload_file = bucket.file(`patterns/${file_name}`);
+    const uploadStream = upload_file.createWriteStream({
+      predefinedAcl: 'publicRead',
+      metadata: {
+        cacheControl: 'no-cache',
+        contentType: 'text/plain',
+      },
+    });
+
+    const readStream = new Readable();
+    readStream.push(`${body}`);
+    readStream.push(null);
+
+    readStream
+      .pipe(uploadStream)
+      .on('end', function() {})
+      .on('finish', resolve);
+
+    console.dir(upload_file);
+  });
+}
