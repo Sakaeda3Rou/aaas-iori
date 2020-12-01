@@ -22,6 +22,7 @@ const firebaseConfig = {
 
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const fs = require('fs');
 
 if (!admin.apps.length) {
   admin.initializeApp(functions.config().firebase);
@@ -67,11 +68,15 @@ exports.upload_file = async (file_name, body) => {
 // ファイルのダウンロード
 exports.download_file = async (file_name) => {
 
-  let file = await bucket.file('patterns/pattern-marker.patt').download();
-  console.log('file type => ', typeof file);
-  console.log('file => ', file);
+  // let file = await (await bucket.file(`patterns/${file_name}`).download()).toString();
+  let file = await bucket.file(`patterns/${file_name}`).getMetadata();
 
-  return file;
+  console.log(`file(type) => ${typeof file}`)
+  console.dir(file)
+  console.log(`file(mediaLink) => ${file[0].selfLink}`)
+  file_url = file[0].mediaLink
+
+  return file_url;
 
   // console.log('patt: ', patt_storage);
   // patterns_storage.child(`${patt_file_name}`).getDownloadURL().then(function(url) {
@@ -125,7 +130,7 @@ exports.upload_patt = async (file_name, body) => {
       predefinedAcl: 'publicRead',
       metadata: {
         cacheControl: 'no-cache',
-        contentType: 'text/plain',
+        contentType: 'application/octet-stream',
       },
     });
 

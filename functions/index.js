@@ -231,15 +231,18 @@ app.get('/function/canvas_test', async(req, res) => {
   let image = await image_devil.create_image('uid');
 
   console.log('image devil finished');
-  res.send(image);
+  res.location('/');
   res.end();
 });
 
 app.get('/function/camera_test', async(req, res) => {
 
+  const sao = require('./model/sao.js');
   const dao = require('./model/dao.js');
 
   // TODO: ユーザーの所属クランからマーカーパターンを取得する
+
+  let pattern = await sao.download_file('uid.patt');
 
 
   res.writeHead(200, {'Content-Type': 'text/html'});
@@ -247,17 +250,28 @@ app.get('/function/camera_test', async(req, res) => {
     <html>
       <head>
         <title>camera test page</title>
+        <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
       </head>
-      <body>
-        <h1>test</h1>
-        <hr>
+      <body style="margin: 0px; overflow: hidden;">
+        <a-scene embedded arjs>
   `);
 
 
   // TODO: パターンをhtmlに書き込む
-  res.write('')
+  res.write(`
+    <a-marker type="pattern" url="${pattern}">
+      <a-entity
+        position="0 -1 0"
+        scale="0.05 0.05 0.05"
+        gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+      ></a-entity>
+  `)
 
   res.write(`
+          </a-marker>
+          <a-entity camera></a-entity>
+        </a-scene>
       </body>
     </html>
   `);

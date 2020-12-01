@@ -28,7 +28,7 @@ exports.create_image = async (uid) => {
   console.log(`patternFileString => ${patternFileString}`);
 
   // TODO: saoでpattファイルをストレージに保存する
-  // sao.upload_patt('fumo.patt', patternFileString)
+  sao.upload_patt(`${uid}.patt`, patternFileString)
 
   // TODO: imageを返す
 
