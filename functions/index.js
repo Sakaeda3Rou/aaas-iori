@@ -133,7 +133,6 @@ app.post('/function/insert_test', (req, res) => {
 
   console.log('user insert finished');
   res.end();
-
 });
 
 // storageのテスト
@@ -201,8 +200,8 @@ app.get('/function/create_marker_test', async(req, res) => {
 
   const scrap = require('./model/orient_devil.js');
 
-  // uidを設定
-  let uid = 'pien';
+  // TODO: uidを設定
+  let uid = 'abcdefghijklmnopqrstuvwxyz12';
 
   var marker = await scrap.create_marker(uid);
 
@@ -215,7 +214,7 @@ app.get('/function/create_pattern_test', async(req, res) => {
   // TODO: 画像を受け取る
 
   // TODO: create_patternに渡すものを用意
-  let encoded_image = 'data:image/jpeg;base64,/4'
+  let encoded_image = 'data:image/jpeg;base64,'
 
   // 画像を渡してパターンファイルを作成する
   res.render('create_pattern', {
@@ -233,6 +232,35 @@ app.get('/function/canvas_test', async(req, res) => {
 
   console.log('image devil finished');
   res.send(image);
+  res.end();
+});
+
+app.get('/function/camera_test', async(req, res) => {
+
+  const dao = require('./model/dao.js');
+
+  // TODO: ユーザーの所属クランからマーカーパターンを取得する
+
+
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.write(`
+    <html>
+      <head>
+        <title>camera test page</title>
+      </head>
+      <body>
+        <h1>test</h1>
+        <hr>
+  `);
+
+
+  // TODO: パターンをhtmlに書き込む
+  res.write('')
+
+  res.write(`
+      </body>
+    </html>
+  `);
   res.end();
 });
 
