@@ -110,21 +110,6 @@
     <p id="load">Firebase SDK Loading&hellip;</p>
 
     <script>
-      var uiConfig = {
-        // ログイン成功後のリダイレクトURL
-        signInSuccessURL: '/function/test1',
-
-        // 認証機能
-        signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID
-        ],
-      }
-
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
-      ui.start('#firebaseui-auth-container', uiConfig);
-    </script>
-
-    <script>
       document.addEventListener('DOMContentLoaded', function() {
         const loadEl = document.querySelector('#load');
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
@@ -142,6 +127,7 @@
         //
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 
+        console.log(`firebase => ${firebase}`)
 
         try {
           let app = firebase.app();
@@ -163,6 +149,18 @@
           loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
         }
 
+        var uiConfig = {
+          // ログイン成功後のリダイレクトURL
+          signInSuccessURL: '/function/test1',
+
+          // 認証機能
+          signInOptions: [
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          ],
+        }
+
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', uiConfig);
       });
     </script>
   </body>
