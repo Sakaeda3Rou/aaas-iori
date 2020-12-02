@@ -231,7 +231,7 @@ app.get('/function/canvas_test', async(req, res) => {
   let image = await image_devil.create_image('uid');
 
   console.log('image devil finished');
-  res.location('/');
+  res.redirect('/');
   res.end();
 });
 

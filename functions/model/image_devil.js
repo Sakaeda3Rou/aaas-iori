@@ -12,23 +12,23 @@ exports.create_image = async (uid) => {
   // let image = await loadImage('images/fumo.jpg');
 
   // キャンバスのサイズを設定
-  // canvas.width = image.width
-  // canvas.height = image.height
+  canvas.width = image.width
+  canvas.height = image.height
 
   console.log(`image => ${image}`)
   console.dir(image);
 
   // ここでuidをimageに書き込んでいく
-  // image = await draw_uid_to_image(uid, image);
+  image = await draw_uid_to_image(uid, image);
 
   // TODO: pattFileStringを作成する
   const patternFileString = await create_patt(image);
 
   // TODO: 確認する
-  console.log(`patternFileString => ${patternFileString}`);
+  // console.log(`patternFileString => ${patternFileString}`);
 
   // TODO: saoでpattファイルをストレージに保存する
-  sao.upload_patt(`${uid}.patt`, patternFileString)
+  // sao.upload_patt(`${uid}.patt`, patternFileString)
 
   // TODO: imageを返す
 
@@ -37,8 +37,11 @@ exports.create_image = async (uid) => {
 
 async function draw_uid_to_image(uid, image) {
 
+
   const text1 = uid.substr(0, 14);
   const text2 = uid.substr(14, 14);
+
+  context.drawImage(image, -canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
 
   // 文字のスタイルを指定
   context.font = '20px sans-serif';
@@ -55,6 +58,8 @@ async function draw_uid_to_image(uid, image) {
   context.fillStyle = '#ecd318';
   y = (canvas.height/2);
   context.fillText(text1, x, y);
+
+  console.log(`toDataURL => ${canvas.toDataURL()}`)
 
   image.src = canvas.toDataURL();
 
