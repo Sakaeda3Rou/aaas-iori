@@ -25,14 +25,17 @@ exports.create_image = async (uid) => {
   const patternFileString = await create_patt(image);
 
   // TODO: 確認する
-  // console.log(`patternFileString => ${patternFileString}`);
+  console.log(`patternFileString => ${patternFileString}`);
+
+  // TODO: imageに黒枠を追加する
 
   // TODO: saoでpattファイルをストレージに保存する
-  // sao.upload_patt(`${uid}.patt`, patternFileString)
+  sao.upload_patt(`${uid}.patt`, patternFileString);
 
-  // TODO: imageを返す
+  // TODO: imageをストレージに保存
+  sao.upload_image(`${uid}.png`, image.src);
 
-  return patternFileString;
+  return image;
 };
 
 async function draw_uid_to_image(uid, image) {
@@ -41,7 +44,8 @@ async function draw_uid_to_image(uid, image) {
   const text1 = uid.substr(0, 14);
   const text2 = uid.substr(14, 14);
 
-  context.drawImage(image, -canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+  // context.drawImage(image, -canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
   // 文字のスタイルを指定
   context.font = '20px sans-serif';

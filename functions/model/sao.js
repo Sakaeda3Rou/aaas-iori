@@ -87,29 +87,42 @@ exports.download_file = async (file_name) => {
   // });
 };
 
-// QRファイルのアップロード
-exports.upload_qr = async (file_name, body) => {
+// 画像ファイルのアップロード
+exports.upload_image = async (file_name, body) => {
   return new Promise((resolve, reject) => {
     const fs = require('fs');
     const Readable = require('stream').Readable;
 
-    const upload_file = bucket.file(`qr/${file_name}`);
-    const uploadStream = upload_file.createWriteStream({
-      predefinedAcl: 'publicRead',
+    // 正規表現で整形する
+    body = body.replace(/.+,/, '');
+
+    body = new Buffer(body, 'base64');
+    console.log(`body => ${body}`);
+
+    const upload_file = bucket.file(`marker_images/${file_name}`);
+    // const uploadStream = upload_file.createWriteStream({
+    //   predefinedAcl: 'publicRead',
+    //   metadata: {
+    //     cacheControl: 'no-cache',
+    //     contentEncoding: 'base64',
+    //     contentType: 'image/png',
+    //   },
+    // });
+
+    upload_file.save(body, {
       metadata: {
-        cacheControl: 'no-cache',
         contentType: 'image/png',
       },
     });
 
-    const readStream = new Readable();
-    readStream.push(`${body}`);
-    readStream.push(null);
-
-    readStream
-      .pipe(uploadStream)
-      .on('end', function() {})
-      .on('finish', resolve);
+    // const readStream = new Readable();
+    // readStream.push(`${body}`);
+    // readStream.push(null);
+    //
+    // readStream
+    //   .pipe(uploadStream)
+    //   .on('end', function() {})
+    //   .on('finish', resolve);
 
     console.dir(upload_file);
 
@@ -126,22 +139,28 @@ exports.upload_patt = async (file_name, body) => {
     const Readable = require('stream').Readable;
 
     const upload_file = bucket.file(`patterns/${file_name}`);
-    const uploadStream = upload_file.createWriteStream({
-      predefinedAcl: 'publicRead',
+
+    upload_file.save(body, {
       metadata: {
-        cacheControl: 'no-cache',
         contentType: 'application/octet-stream',
       },
     });
-
-    const readStream = new Readable();
-    readStream.push(`${body}`);
-    readStream.push(null);
-
-    readStream
-      .pipe(uploadStream)
-      .on('end', function() {})
-      .on('finish', resolve);
+    // const uploadStream = upload_file.createWriteStream({
+    //   predefinedAcl: 'publicRead',
+    //   metadata: {
+    //     cacheControl: 'no-cache',
+    //     contentType: 'application/octet-stream',
+    //   },
+    // });
+    //
+    // const readStream = new Readable();
+    // readStream.push(`${body}`);
+    // readStream.push(null);
+    //
+    // readStream
+    //   .pipe(uploadStream)
+    //   .on('end', function() {})
+    //   .on('finish', resolve);
 
     console.dir(upload_file);
   });

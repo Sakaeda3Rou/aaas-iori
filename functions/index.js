@@ -33,6 +33,17 @@ app.use(session({
 
 // ルーティングのテスト
 app.get('/function/test1', (req, res) => {
+
+  fs.readFile('views/test1.html', 'utf-8', (err, data) => {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(data);
+    res.end();
+  });
+});
+
+app.post('/function/test1', (req, res) => {
+  console.log(`body => ${req.body}`)
+
   fs.readFile('views/test1.html', 'utf-8', (err, data) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.write(data);
@@ -231,7 +242,25 @@ app.get('/function/canvas_test', async(req, res) => {
   let image = await image_devil.create_image('uid');
 
   console.log('image devil finished');
-  res.redirect('/');
+  res.write(`
+    <html>
+      <head>
+        <title>canvas test</title>
+      </head>
+      <body>
+        <!-- <canvas id="test_canvas" width="${image.width}" height="${image.height}"></canvas> -->
+
+        <img src="${image.src}">
+
+        <script>
+          // 描画コンテキストの取得
+          // var canvas = document.getElementById('test_canvas');
+          // var context = canvas.getContext('2d');
+
+        </script>
+      </body>
+    </html>
+  `);
   res.end();
 });
 

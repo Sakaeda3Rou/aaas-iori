@@ -100,6 +100,8 @@
         <input type="submit" value="camera_test">
       </form>
 
+      <input type="button" value="login" onclick="loginButtonAction()">
+
       <script>
         function hello() {
           console.log('hello');
@@ -127,11 +129,9 @@
         //
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 
-        console.log(`firebase => ${firebase}`)
 
         try {
           let app = firebase.app();
-          console.log(`firebase1 => ${firebase}`)
           let features = [
             'auth',
             'database',
@@ -150,10 +150,21 @@
         }
 
         var uiConfig = {
+          // ログイン成功時のコールバック
+          callbacks: {
+            signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+              console.log(`authResult => ${authResult}`)
+              console.dir(authResult);
+
+              return false;
+            }
+          },
+
           // ログイン成功後のリダイレクトURL
           signInSuccessURL: '/function/test1',
 
-          // 認証機能
+
+          // 設定
           signInOptions: [
             firebase.auth.GoogleAuthProvider.PROVIDER_ID
           ],
@@ -162,6 +173,62 @@
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start('#firebaseui-auth-container', uiConfig);
       });
+    </script>
+    <script>
+      function loginButtonAction() {
+
+        var provider = new firebase.auth.GoogleAuthProvider();
+
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+          console.log("login success");
+
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // The signed-in user info.
+          var user = result.user;
+          // ...
+
+          // プロフィールを出力
+          console.log("uid: " + user.uid);
+          console.log("name: " + user.displayName);
+          console.log("email: " + user.email);
+
+          // TODO: コントローラーに投げる
+
+          // const xhr = new XMLHttpRequest();
+          // const fd = new FormData();
+          //
+          // fd.append("pien", "pieee");
+          //
+          // xhr.open('post', '/function/test1')
+          // xhr.send(fd);
+
+          // var form = document.createElement('form');
+          // var request = document.createElement('input');
+          //
+          // form.method = 'post';
+          // form.action = '/function/test1';
+          //
+          // request.type = 'hidden';
+          // request.name = 'uid';
+          // request.value = user.uid;
+          //
+          // form.appendChild(request);
+          // document.body.appendChild(form);
+          //
+          // form.submit();
+
+        }).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+        });
+      }
     </script>
   </body>
 </html>
