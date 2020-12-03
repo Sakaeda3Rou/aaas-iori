@@ -1,6 +1,6 @@
 const sao = require('./sao.js')
 const {createCanvas, loadImage} = require('canvas')
-const canvas = createCanvas(200, 200);
+const canvas = createCanvas();
 const context = canvas.getContext('2d');
 
 
@@ -28,6 +28,7 @@ exports.create_image = async (uid) => {
   console.log(`patternFileString => ${patternFileString}`);
 
   // TODO: imageに黒枠を追加する
+  image = await add_black_frame(image);
 
   // TODO: saoでpattファイルをストレージに保存する
   sao.upload_patt(`${uid}.patt`, patternFileString);
@@ -38,6 +39,7 @@ exports.create_image = async (uid) => {
   return image;
 };
 
+// qr画像にuidを描画する
 async function draw_uid_to_image(uid, image) {
 
 
@@ -59,11 +61,32 @@ async function draw_uid_to_image(uid, image) {
   var x = (canvas.width/2);
   var y = (canvas.height*3/5);
   context.fillText(text2, x, y);
-  context.fillStyle = '#ecd318';
+  // context.fillStyle = '#ecd318';
   y = (canvas.height/2);
   context.fillText(text1, x, y);
 
-  console.log(`toDataURL => ${canvas.toDataURL()}`)
+  console.log(`toDataURL(add_uid) => ${canvas.toDataURL()}`)
+
+  image.src = canvas.toDataURL();
+
+  return image;
+}
+
+// 黒枠を追加する
+async function add_black_frame(image) {
+  const frame = await loadImage('images/black.png');
+
+  // キャンバスのサイズを変更
+  canvas.width = frame.width
+  canvas.height = frame.height
+
+  // 全面黒に染め上げる
+  context.drawImage(frame, 0, 0, canvas.width, canvas.height);
+
+  // qrを被せる
+  context.drawImage(image, 103, 103, image.width, image.height);
+
+  console.log(`toDataURL(add_black_frame) => ${canvas.toDataURL()}`)
 
   image.src = canvas.toDataURL();
 

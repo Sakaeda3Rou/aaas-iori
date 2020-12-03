@@ -238,8 +238,10 @@ app.get('/function/canvas_test', async(req, res) => {
 
   const image_devil = require('./model/image_devil.js');
 
+  let uid = 'abcdefghijklmnopqrstuvwxyz12';
+
   // TODO: uidを渡す
-  let image = await image_devil.create_image('uid');
+  let image = await image_devil.create_image(uid);
 
   console.log('image devil finished');
   res.write(`
@@ -269,9 +271,11 @@ app.get('/function/camera_test', async(req, res) => {
   const sao = require('./model/sao.js');
   const dao = require('./model/dao.js');
 
+  let uid = 'abcdefghijklmnopqrstuvwxyz12';
+
   // TODO: ユーザーの所属クランからマーカーパターンを取得する
 
-  let pattern = await sao.download_file('uid.patt');
+  let pattern = await sao.download_file(`${uid}.patt`);
 
 
   res.writeHead(200, {'Content-Type': 'text/html'});

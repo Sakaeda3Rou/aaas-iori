@@ -110,6 +110,7 @@ exports.upload_image = async (file_name, body) => {
     // });
 
     upload_file.save(body, {
+      predefinedAcl: 'publicRead',
       metadata: {
         contentType: 'image/png',
       },
@@ -141,6 +142,7 @@ exports.upload_patt = async (file_name, body) => {
     const upload_file = bucket.file(`patterns/${file_name}`);
 
     upload_file.save(body, {
+      predefinedAcl: 'publicRead',
       metadata: {
         contentType: 'application/octet-stream',
       },
