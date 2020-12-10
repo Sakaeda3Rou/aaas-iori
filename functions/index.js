@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const express = require('express');
-const session = require('cookie-session');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
@@ -20,6 +21,8 @@ app.use(session({
   }
 }));
 
+admin.initializeApp(functions.config().firebase);
+
 
 // app.get('/function/:file', (req, res) => {
 //   console.log(`open:views/${req.params.file}.html`);
@@ -31,8 +34,42 @@ app.use(session({
 //   });
 // });
 
+// XMLHttpRequestテストの受け皿
+app.post('/function/select', (req, res) => {
+  console.log('welcome to XMLHttpRequest function');
+
+  console.log(`request body => ${req.body}`)
+  console.log(`request type => ${typeof req.body}`)
+
+  
+  res.write('pien');
+  res.end();
+});
+
+app.post('/function/login', (req, res) => {
+  console.log('login(post)');
+
+  // パラメータを取得
+  const user = req.body.user
+
+  res.end();
+
+  fs.readFile('views/test1.html', 'utf-8', (err, data) => {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(data);
+    res.end();
+  });
+});
+
+app.get('/function/login', (req, res) => {
+  console.log('login(get)');
+
+  res.end();
+});
+
 // ルーティングのテスト
 app.get('/function/test1', (req, res) => {
+
 
   fs.readFile('views/test1.html', 'utf-8', (err, data) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
@@ -293,7 +330,8 @@ app.get('/function/camera_test', async(req, res) => {
 
   // TODO: パターンをhtmlに書き込む
   res.write(`
-    <a-marker type="pattern" url="${pattern}">
+    // <a-marker type="pattern" url="${pattern}">
+    <a-marker preset="hiro">
       <a-entity
         position="0 -1 0"
         scale="0.05 0.05 0.05"
@@ -309,6 +347,53 @@ app.get('/function/camera_test', async(req, res) => {
     </html>
   `);
   res.end();
+});
+
+app.get('/function/camera_test_v2', async (req, res) => {
+
+  const sao = require('./model/sao.js');
+  const dao = require('./model/dao.js');
+
+
+  // レスポンスヘッダーを設定
+  res.writeHead(200, {'Content-Type': 'text/html'});
+
+  fs.readFile('views/camera_top.html', 'utf-8', (err, data) => {
+    console.log('1')
+    res.write(data);
+
+    // a-scene開始タグ
+    // res.write(`
+    //   <a-scene vr-mode-ui="enabled: false">
+    //     <a-entity camera>
+    //
+    // `);
+
+    // a-scene終了タグ
+    // res.write(`
+    //     </a-entity>
+    //   </a-scene>
+    // `)
+
+    // オブジェクト選択メニューの表示
+    res.write(`
+      <div class="object-select-menu" style="z-index: 10; background-color: rgba(0, 0, 0, 0.3); width: 100%; top: 0; left: 0; position: absolute;">
+        <ul>
+          <li><input type="radio" name="object" value="001" checked>Object1</li>
+          <li><input type="radio" name="object" value="002">Object2</li>
+        </ul>
+
+        <input type="button" id="object-select-decision" value="Decision" onclick="decisionButtonAction()">
+      </div>
+    `)
+
+    fs.readFile('views/camera_bottom.html', 'utf-8', (err, data) => {
+      console.log('2')
+      res.write(data);
+      res.end();
+    });
+  });
+
 });
 
 exports.app = functions.https.onRequest(app);

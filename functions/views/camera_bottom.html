@@ -1,0 +1,50 @@
+
+      <script>
+        function decisionButtonAction() {
+          console.log('decision button action');
+
+          // ラジオボタンをすべて取得
+          var elements = document.getElementsByName('object');
+
+          var checked_button = null;
+
+          // チェックされているボタンを判定
+          for(i = 0; i < elements.length; i++) {
+            // チェックされているボタンを判定
+            if(elements[i].checked) {
+              checked_button = elements[i];
+              break;
+            }
+          }
+
+          // リクエストを作成
+          var xhr = new XMLHttpRequest();
+
+          // 選択されたオブジェクトのIdを格納
+          var objectId = checked_button.value;
+
+          // リクエストを送信
+          xhr.open('post', '/function/select');
+          xhr.send(objectId);
+
+        }
+
+        // リクエストの状態が変更されたときに実行
+        xhr.onreadystatechange = function() {
+          // リクエスト操作が完了した場合
+          if(xhr.readyState == XMLHttpRequest.DONE) {
+            // ステータスコードを取得
+            var status = xhr.status;
+            if(status == 0 || (status >= 200 && status < 400)) {
+              // リクエストが正常終了したとき
+              console.log(`response => ${xhr.responseText}`);
+            } else {
+              console.log(`XMLHttpRequest Error`);
+            }
+          }
+        }
+      </script>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

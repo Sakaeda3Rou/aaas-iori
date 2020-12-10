@@ -1,20 +1,20 @@
 // Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBXa5waXjg5x17KxbR-HMyXXQ4kivx1jLc",
-  authDomain: "aaas-iori.firebaseapp.com",
-  databaseURL: "https://aaas-iori.firebaseio.com",
-  projectId: "aaas-iori",
-  storageBucket: "aaas-iori.appspot.com",
-  messagingSenderId: "514691189462",
-  appId: "1:514691189462:web:ce27d3a63b8bc5b278d777"
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBXa5waXjg5x17KxbR-HMyXXQ4kivx1jLc",
+//   authDomain: "aaas-iori.firebaseapp.com",
+//   databaseURL: "https://aaas-iori.firebaseio.com",
+//   projectId: "aaas-iori",
+//   storageBucket: "aaas-iori.appspot.com",
+//   messagingSenderId: "514691189462",
+//   appId: "1:514691189462:web:ce27d3a63b8bc5b278d777"
+// };
 
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 
-if (!admin.apps.length) {
-  admin.initializeApp(functions.config().firebase);
-}
+// if (!admin.apps.length) {
+//   admin.initializeApp(functions.config().firebase);
+// }
 
 const db = admin.firestore();
 

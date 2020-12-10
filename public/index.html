@@ -100,11 +100,50 @@
         <input type="submit" value="camera_test">
       </form>
 
-      <input type="button" value="login" onclick="loginButtonAction()">
+      <form action="/function/camera_test_v2" method="get">
+        <input type="submit" value="camera_test_v2">
+      </form>
+
+      <input type="button" value="login" onclick="loginButtonAction()"><br>
+
+      <input type="button" value="select" onclick="selectButtonAction()">
 
       <script>
         function hello() {
           console.log('hello');
+        }
+      </script>
+
+      <script>
+        var xhr = new XMLHttpRequest();
+        // var fd = new FormData();
+
+        function selectButtonAction() {
+
+          var objectId = 'untisaikyoman'
+
+          // fd.append('objectId', objectId);
+
+          xhr.open('post', '/function/select');
+          xhr.send(objectId);
+
+        }
+
+        // リクエストの状態が変更された時
+        xhr.onreadystatechange = function() {
+
+
+          // リクエスト操作が完了した場合
+          if(xhr.readyState == XMLHttpRequest.DONE) {
+            // ステータスコードを取得
+            var status = xhr.status;
+            if(status === 0 || (status >= 200 && status < 400)) {
+              // リクエストが正常終了した場合
+              console.log(`response => ${xhr.responseText}`);
+            } else {
+              console.log('request error');
+            }
+          }
         }
       </script>
 
@@ -155,6 +194,32 @@
             signInSuccessWithAuthResult: function(authResult, redirectUrl) {
               console.log(`authResult => ${authResult}`)
               console.dir(authResult);
+              console.log(`user: ${authResult.user}`);
+              console.log(authResult.user.uid)
+
+              // ユーザー情報をコントローラに投げる
+              // const xhr = new XMLHttpRequest();
+              // const fd = new FormData();
+              //
+              // fd.append('_user', authResult.user);
+              //
+              // xhr.open('post', '/function/login');
+              // xhr.send(fd);
+
+              var form = document.createElement('form');
+              var request = document.createElement('input');
+
+              form.method = 'post';
+              form.action = '/login';
+
+              request.type = 'hidden';
+              request.name = 'uid';
+              request.value = authResult.user.uid;
+
+              form.appendChild(request);
+              document.body.appendChild(form);
+
+              form.submit();
 
               return false;
             }
